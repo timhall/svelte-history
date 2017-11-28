@@ -10,14 +10,32 @@
 </style>
 
 <script>
+  import { getRouter } from './methods';
+
   export default {
     oncreate() {
-      const router = this.get('router') || (this.store && this.store.get('router'));
+      const router = getRouter(this);
       if (!router) return;
 
-      // TODO Create exclusive sub-router, that activates first matching route
-      const context = router;
-      this.set({ context });
+      // Clone router to create somewhat isolated context
+      const context = new router.constructor(router.options);
+
+      context.onChange = location => {
+        context.active = null;
+        context.set({ location });
+      };
+
+      // TODO components fire match in reverse order, defeating whole purpose of <Switch>...
+      context.match = (pattern) => {
+        if (context.active) return pattern.normalized === context.active;
+
+        const matches = pattern.match(context.url) !== null;
+        if (matches) context.active = pattern.normalized;
+
+        return matches;
+      };
+
+      this.set({ context: router });
     }
   }
 </script>

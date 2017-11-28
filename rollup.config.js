@@ -4,6 +4,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import buble from 'rollup-plugin-buble';
 import uglify from 'rollup-plugin-uglify';
+import filesize from 'rollup-plugin-filesize';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -42,6 +43,8 @@ export default {
     // https://github.com/rollup/rollup-plugin-commonjs
     resolve(),
     commonjs(),
+
+    filesize(),
 
     // If we're building for production (npm run build
     // instead of npm run dev), transpile and minify

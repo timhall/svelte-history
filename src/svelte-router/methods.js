@@ -23,15 +23,6 @@ export function goForward(router = getRouter(this)) {
   router.goForward();
 }
 
-export function normalizePattern(pattern, exact = false) {
-  if (!pattern.startsWith('/')) pattern = '/' + pattern;
-  
-  if (!exact && !(pattern.endsWith('/') || pattern.endsWith('(/)'))) pattern += '(/*)';
-  else if (!exact) pattern += '(*)';
-
-  return pattern;
-}
-
-function getRouter(component) {
+export function getRouter(component) {
   return component.get('router') || (component.store && component.store.get('router'));
 }

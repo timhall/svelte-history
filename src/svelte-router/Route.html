@@ -16,25 +16,28 @@
 </style>
 
 <script>
-  import UrlPattern from 'url-pattern';
-  import { normalizePattern } from './methods';
+  import Pattern from './pattern';
+  import { getRouter } from './methods';
 
   export default {
     oncreate() {
-      const router = this.get('router') || this.store && this.store.get('router');
+      const router = getRouter(this);
       if (!router) return;
 
-      router.observe('location', (location) => {
+      router.observe('location', () => {
         const pattern = this.get('pattern');
-        const params = pattern.match(router.url);
-        this.set(Object.assign({ active: params !== null }, params));
+        const active = router.match(pattern);
+        if (!active) return;
+
+        const params = pattern.params(router.url);
+        this.set(Object.assign({ active }, params));
       });
     },
     
     data: () => ({ path: '*', exact: false, router: null, active: false }),
 
     computed: {
-      pattern: (path, exact) => new UrlPattern(normalizePattern(path, exact))
+      pattern: (path, exact) => new Pattern(path, exact)
     }
   }
 </script>

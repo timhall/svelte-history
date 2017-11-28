@@ -1,6 +1,6 @@
 <script>
-  import UrlPattern from 'url-pattern';
-  import { replace, normalizePattern } from './methods';
+  import Pattern from 'url-pattern';
+  import { replace } from './methods';
 
   export default {
     oncreate() {
@@ -14,11 +14,11 @@
     data: () => ({ path: null, to: null, exact: false, router: null }),
     
     computed: {
-      pattern: (path, exact) => path && new UrlPattern(normalizePattern(path, exact)),
+      pattern: (path, exact) => path && new Pattern(path, exact),
       active: (pattern, router, $router) => {
         if (!pattern) return false;
-        if (router) return pattern.match(router.url) !== null;
-        if ($router) return pattern.match($router.url) !== null;
+        if (router) return router.match(pattern);
+        if ($router) return $router.match(pattern);
         return false;
       }
     },

@@ -9,6 +9,7 @@ window.store = store;
 
 const router = new HashRouter();
 router.connectTo(store);
+window.router = router;
 
 const app = new App({
   target: document.body,
