@@ -4,14 +4,16 @@
   import { getRouter } from './methods';
 
   export default {
-    data: () => ({ to: '/', replace: false, router: null }),
-    computed: {
-      href: (to, router, $router) => {
-        if (router) return router.toHref(to);
-        if ($router) return $router.toHref(to);
-        return to;
-      }
+    oncreate() {
+      const router = getRouter(this);
+
+      this.observe('to', to => {
+        const href = router.toHref(to);
+        this.set({ href });
+      });
     },
+
+    data: () => ({ to: '/', replace: false, router: null }),
     methods: {
       click(e) {
         if (e.ctrlKey) return;
