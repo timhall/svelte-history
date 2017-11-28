@@ -1,5 +1,5 @@
 import { Store } from 'svelte/store';
-import { HashRouter } from './svelte-router';
+import { BrowserRouter as Router } from './svelte-router';
 import App from './App.html';
 
 const store = new Store({
@@ -7,7 +7,7 @@ const store = new Store({
 });
 window.store = store;
 
-const router = new HashRouter();
+const router = new Router();
 router.connectTo(store);
 window.router = router;
 

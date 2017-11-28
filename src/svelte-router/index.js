@@ -1,4 +1,6 @@
-export { HashRouter } from './router';
+export { default as BrowserRouter } from './browser-router';
+export { default as HashRouter } from './hash-router';
+
 export { default as Route } from './Route.html';
 export { default as Redirect } from './Redirect.html';
 export { default as Link } from './Link.html';

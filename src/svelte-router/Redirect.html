@@ -1,28 +1,25 @@
 <script>
   import Pattern from 'url-pattern';
-  import { replace } from './methods';
+  import { getRouter } from './methods';
 
   export default {
     oncreate() {
-      if (!this.get('path')) this.replace(this.get('to'));
+      const router = getRouter(this);
 
+      if (!this.get('path')) router.replace(this.get('to'));
+
+      this.observe('pattern', pattern => {
+        const active = pattern && router.match(pattern);
+        this.set({ active });
+      })
       this.observe('active', active => {
         if (active) this.replace(this.get('to'));
       });
     },
 
-    data: () => ({ path: null, to: null, exact: false, router: null }),
-    
+    data: () => ({ path: null, to: null, exact: false, active: false, router: null }),
     computed: {
-      pattern: (path, exact) => path && new Pattern(path, exact),
-      active: (pattern, router, $router) => {
-        if (!pattern) return false;
-        if (router) return router.match(pattern);
-        if ($router) return $router.match(pattern);
-        return false;
-      }
-    },
-
-    methods: { replace }
+      pattern: (path, exact) => path && new Pattern(path, exact)
+    }
   }
 </script>
