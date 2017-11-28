@@ -1,0 +1,28 @@
+<script>
+  import UrlPattern from 'url-pattern';
+  import { replace, normalizePattern } from './methods';
+
+  export default {
+    oncreate() {
+      if (!this.get('path')) this.replace(this.get('to'));
+
+      this.observe('active', active => {
+        if (active) this.replace(this.get('to'));
+      });
+    },
+
+    data: () => ({ path: null, to: null, exact: false, router: null }),
+    
+    computed: {
+      pattern: (path, exact) => path && new UrlPattern(normalizePattern(path, exact)),
+      active: (pattern, router, $router) => {
+        if (!pattern) return false;
+        if (router) return pattern.match(router.url) !== null;
+        if ($router) return pattern.match($router.url) !== null;
+        return false;
+      }
+    },
+
+    methods: { replace }
+  }
+</script>

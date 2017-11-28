@@ -1,0 +1,23 @@
+<div class="switch">
+  <slot />
+</div>
+
+<style>
+  .switch {
+    border-left: solid 4px orange;
+    padding-left: 1em;
+  }
+</style>
+
+<script>
+  export default {
+    oncreate() {
+      const router = this.get('router') || (this.store && this.store.get('router'));
+      if (!router) return;
+
+      // TODO Create exclusive sub-router, that activates first matching route
+      const context = router;
+      this.set({ context });
+    }
+  }
+</script>

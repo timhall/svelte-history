@@ -1,0 +1,29 @@
+<a :href on:click="click(event)"><slot /></a>
+
+<script>
+  import { push, replace } from './methods';
+
+  export default {
+    data: () => ({ to: '/', replace: false, router: null }),
+    computed: {
+      href: (to, router, $router) => {
+        if (router) return router.formattedUrl(to);
+        if ($router) return $router.formattedUrl(to);
+        return to;
+      }
+    },
+    methods: {
+      click(e) {
+        if (e.ctrlKey) return;
+
+        e.preventDefault();
+
+        const to = this.get('to');
+        const router = this.get('router') || (this.store && this.store.get('router'));
+
+        if (this.get('replace')) replace(to, router);
+        else push(to, router);
+      }
+    }
+  }
+</script>

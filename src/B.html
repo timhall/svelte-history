@@ -1,0 +1,25 @@
+B
+
+<Route path="/b/a">A</Route>
+<Route path="/b/b">B</Route>
+
+<Redirect path="/b/home" to="/" />
+<Route path="/b/direct" >
+  <label>
+    <input type="checkbox" bind:checked=loggedIn />
+    Logged In
+  </label>
+
+  {{#if !loggedIn}}
+    <Redirect to="/" />
+  {{/if}}
+</Route>
+
+<script>
+  import { Route, Redirect } from './svelte-router';
+
+  export default {
+    components: { Route, Redirect },
+    data: () => ({ loggedIn: true })
+  }
+</script>
