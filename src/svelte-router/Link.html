@@ -1,4 +1,4 @@
-<a :href on:click="click(event)"><slot /></a>
+<a :href :target :class :style :rel on:click="click(event)"><slot /></a>
 
 <script>
   import { getRouter } from './methods';
@@ -13,10 +13,28 @@
       });
     },
 
-    data: () => ({ to: '/', replace: false, href: '/', router: null }),
+    data: () => ({
+      to: '/',
+      replace: false,
+      href: '/',
+      target: '',
+      class: '',
+      style: '',
+      rel: '',
+      router: null
+    }),
+
     methods: {
       click(e) {
-        if (e.ctrlKey) return;
+        this.fire('click', e);
+
+        // Ignore everything except unmodified left-clicks
+        // (ignore if from button, has modifier key, or has target)
+        if (e.defaultPrevented) return;
+        if (e.button !== 0) return;
+        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
+        if (this.get('target')) return;
+
         e.preventDefault();
 
         const to = this.get('to');

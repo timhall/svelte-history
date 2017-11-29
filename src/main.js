@@ -1,10 +1,8 @@
 import { Store } from 'svelte/store';
-import { BrowserRouter as Router } from './svelte-router';
+import { HashRouter as Router } from './svelte-router';
 import App from './App.html';
 
-const store = new Store({
-  name: 'world',
-});
+const store = new Store();
 window.store = store;
 
 const router = new Router();

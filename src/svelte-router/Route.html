@@ -27,9 +27,7 @@
       router.observe('location', () => {
         const pattern = this.get('pattern');
         const active = router.match(pattern);
-        if (!active) return;
-
-        const params = pattern.params(router.url);
+        const params = active ? pattern.params(router.url) : null;
         this.set(Object.assign({ active }, params));
       });
     },
