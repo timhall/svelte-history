@@ -1,53 +1,43 @@
-import { createLocation } from 'history';
+import {
+  createLocation,
+  createBrowserHistory as browser,
+  createHashHistory as hash,
+  createMemoryHistory as memory
+} from 'history';
 import match from './match';
 
-export default class History {
-  constructor() {
-    this.connections = [];
-  }
+export function createBrowserHistory(options) {
+  return prepareHistory(browser(options));
+}
 
-  get location() {
-    return this.history.location;
-  }
+export function createHashHistory(options) {
+  return prepareHistory(hash(options));
+}
 
-  match(path, options = {}) {
+export function createMemoryHistory(options) {
+  return prepareHistory(memory(options));
+}
+
+function prepareHistory(history) {
+  history.match = (path, options = {}) => {
     const { exact = false } = options;
-    return match(this.location.pathname, { path, exact });
-  }
+    return match(History.location.pathname, { path, exact });
+  };
 
-  push(path) {
-    this.history.push(path);
-  }
-  replace(path) {
-    this.history.replace(path);
-  }
-  go(n) {
-    this.history.go(n);
-  }
-  goBack() {
-    this.history.goBack();
-  }
-  goForward() {
-    this.history.goForward();
-  }
-
-  pathToHref(path) {
+  const createHref = history.createHref;
+  history.createHref = path => {
     const location =
       typeof path === 'string'
-        ? createLocation(path, null, null, this.location)
+        ? createLocation(path, null, null, history.location)
         : path;
 
-    return this.history.createHref(location);
-  }
+    return createHref(location);
+  };
 
-  connectTo(stateful) {
-    this.connections.push(stateful);
-    stateful.set({ history: this });
-  }
+  history.connectTo = stateful => {
+    stateful.set({ history });
+    return history.listen(() => stateful.set({ history }));
+  };
 
-  onChange() {
-    this.connections.forEach(connection => {
-      connection.set({ history: this });
-    });
-  }
+  return history;
 }

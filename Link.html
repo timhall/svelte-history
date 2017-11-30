@@ -13,7 +13,7 @@
       rel: ''
     }),
     computed: {
-      href: ($history, to) => $history.pathToHref(to)
+      href: ($history, to) => $history.createHref(to)
     },
     methods: {
       click(e) {

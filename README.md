@@ -11,12 +11,14 @@ yarn add svelte-history
 
 ```js
 import { Store } from 'svelte/store';
-import { BrowserHistory } from 'svelte-history';
+import { createBrowserHistory } from 'svelte-history';
+// Also available: createHashHistory and createMemoryHistory
+
 import App from './App.html';
 
 const store = new Store();
 
-const history = new BrowserHistory();
+const history = createBrowserHistory();
 history.connectTo(store);
 
 const app = new App({
@@ -151,7 +153,7 @@ currently:
 
 ```html
 <li class="{{active ? 'is-active' : ''}}">
-  <a :href on:click="click()"><slot /></a>
+  <button on:click="click()"><slot /></button>
 </li>
 
 <script>
@@ -159,7 +161,6 @@ currently:
     data: () => ({ to: '/', exact: true }),
     computed: {
       active: ($history, to, exact) => $history.match(to, { exact }),
-      href: ($history, to) => $history.pathToHref(to)
     },
     methods: {
       click() {
@@ -172,3 +173,7 @@ currently:
   }
 </script>
 ```
+
+## SSR
+
+Example coming soon
