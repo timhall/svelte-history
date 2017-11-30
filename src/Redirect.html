@@ -1,0 +1,24 @@
+<slot />
+
+<script>
+  export default {
+    oncreate() {
+      const history = this.store.get('history');
+      const from = this.get('from');
+      const to = this.get('to');
+
+      if (!from) history.replace(to);
+    },
+
+    data: () => ({ to: '/', from: null }),
+    computed: {
+      active: (from, to, $history) => {
+        const active = from && $history.match(from);
+        if (!active) return false;
+
+        $history.replace(to);
+        return true;
+      } 
+    }
+  }
+</script>

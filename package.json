@@ -1,6 +1,7 @@
 {
-  "name": "svelte-app",
-  "version": "1.0.0",
+  "name": "svelte-history",
+  "version": "0.0.1",
+  "main": "dist/svelte-history",
   "devDependencies": {
     "chokidar": "^1.7.0",
     "rollup": "^0.49.3",
@@ -13,13 +14,17 @@
     "rollup-plugin-uglify": "^2.0.1",
     "serve": "^6.0.6"
   },
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "serve public & rollup -c -w",
-    "start": "serve public"
-  },
   "dependencies": {
     "history": "^4.7.2",
+    "path-to-regexp": "^2.1.0",
     "url-pattern": "^1.0.3"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "build:example": "rollup -c rollup.config.example.js",
+    "start": "serve example/public"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }

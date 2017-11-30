@@ -1,18 +1,16 @@
-# svelte-router
+# svelte-history
 
-Component-based router for svelte.
-
-(Note: name to change, as `svelte-router` is already used)
-
-## Router
+## Usage
 
 ```js
-import { HashRouter as Router } from 'svelte-router';
 import { Store } from 'svelte/store';
+import { BrowserHistory } from 'svelte-history';
+import App from './App.html';
 
 const store = new Store();
-const router = new Router();
-router.connectTo(store);
+
+const history = new BrowserHistory();
+history.connectTo(store);
 
 const app = new App({
   target: document.getElementById('app'),
@@ -20,92 +18,47 @@ const app = new App({
 });
 ```
 
-```js
-// Alternatively, can pass router directly as data on App,
-// but need to be sure to pass to all <Route>, <Link>, <Switch>, and <Redirect> components
-import { HashRouter as Router } from 'svelte-router';
-
-const router = new Router();
-const app = new App({
-  target: document.getElementById('app'),
-  data: { router }
-});
-
-router.connectTo(app, { init: false });
-```
-
-TODO
-
-- [ ] BrowserRouter
-- [ ] SSR routing
-
-## Route
+## match
 
 ```html
-<Route path="/" exact>
-  Home
-</Route>
-<Route path="/books">
-  Books
-
-  <Route path="/books/:id" bind:id>
-    Book {{id}}
-  </Route>
-</Route>
+{{#if $history.match('/', { exact: true })}}
+  <Home />
+{{elseif routes.books}}
+  <Books />
+{{elseif routes.book}}
+  <Book id="{{routes.book.id}}" />
+{{else}}
+  <NotFound />
+{{/if}}
 
 <script>
-  import { Route } from 'svelte-router'
+  // import Home, Books, Book, NotFound...
 
   export default {
-    components: { Route }
+    computed: {
+      routes: $history => ({
+        books: $history.match('/books'),
+        book: $history.match('/book/:id')
+      })
+    }
   }
 </script>
 ```
 
-`<Route>` is the fundamental component of svelte-router. As a standalone components, it can be used throughout a svelte app to show content as needed, based on the current url. url parameters are set directly on the `<Route>` component and can be retrieved via data-binding. This sets the data value in the current component scope, so the binding may need to be renamed to avoid conflicts.
+## methods
 
 ```html
-<Route path="/static/:dynamic" bind:dynamic>
-  {{dynamic}}
-</Route>
-
-<!-- Rename binding to avoid conflicting with existing "a" -->
-<Route path="/:a" bind:a="paramA">
-  {{paramA}}
-</Route>
+<button on:click="goBack()">Back</button>
+<button on:click="goForward()">Forward</button>
+<button on:click="push('/')">Home</button>
+<button on:click="replace('/redirect')">Replace</button>
+<button on:click="go(-2)">Back 2x</button>
 
 <script>
-  import { Route } from 'svelte-router'
+  import { push, replace, go, goBack, goForward } from 'svelte-history';
 
   export default {
-    components: { Route },
-    data: () => ({a: 'may-conflict' })
-  }
-</script>
-```
-
-Additionally, svelte renders slot content when the component is rendered [see #903](https://github.com/sveltejs/svelte/issues/903), so content inside of the route is rendered initially even if the `<Route>` is not active and then shown when the route becomes active. This can lead to issues with unbound parameters or content that shouldn't be rendered until a route is active. Here are some techniques to avoid these issues:
-
-```html
-<Route path="/" bind:active>
-  {{#if active}}
-    <WaitForActive />
-  {{/if}}
-</Route>  
-
-<Route path="/static/:dynamic" bind:dynamic>
-  {{#if dynamic}}
-    <WaitForParam :dynamic />
-  {{/if}}
-</Route>
-
-<script>
-  import { Route } from 'svelte-router'
-  import WaitForActive from '...'
-  import WaitForParam from '...'
-
-  export default {
-    components: { Route, WaitForActive, WaitForParam }
+    methods: { push, replace, go, goBack, goForward }
   }
 </script>
 ```
@@ -113,14 +66,11 @@ Additionally, svelte renders slot content when the component is rendered [see #9
 ## Link
 
 ```html
-<nav>
-  <li><Link to="/">Home</Link></li>
-  <li><Link to="/replaced" replace>Replace</Link></li>
-</nav>
-
+<Link to="/">Home</Link>
+<Link to="/replace" replace>Internal</Link>
 
 <script>
-  import { Link } from 'svelte-router'
+  import { Link } from 'svelte-history';
 
   export default {
     components: { Link }
@@ -128,82 +78,88 @@ Additionally, svelte renders slot content when the component is rendered [see #9
 </script>
 ```
 
-Renders an `<a>` with the proper `href` and handling for `ctrl-click`, `replace`, and other behaviors.
+## Route
 
-TODO
-
-- [ ] Standard approach for custom links (e.g. Buttons)
-- [ ] Highlight active links
-
-## Redirect
-
-Redirects are used to define static or dynamic redirects to other routes.
+Note: You can think of `<Route>` as the future API, but it has some deficiencies
+currently: Content is rendered immediately, regardless of whether the route is
+active ([see #903](https://github.com/sveltejs/svelte/issues/903)), there is no
+`<Switch>` available to catch unmatched situations (e.g. for 404), and route
+params (see `bind:id` below) are initially unbound, potentially leading to
+issues since content is rendered immediately.
 
 ```html
-<!-- Static redirect -->
-<Redirect from="/old" to="/new" exact />
-
-<!-- Dynamic redirect -->
 <Route path="/" exact>
-  {{#if !authorized}}
-    <Redirect to="/login" />
-  {{/if}}
+  <Home />
 </Route>
+<Route path="/books">
+  <Books />
 
-<!-- Static with params -->
-<Route path="/old/:id" bind:id>
-  <!-- Guard for unbound case on inactive render -->
-  {{#if id}}
-    <Redirect to="/new/{{id}}" />
+  <Route path="/books/:id" bind:id>
+    <Book :id />
+  </Route>
+</Route>
+<Route path="/authors" exact bind:active>
+  <!-- Only render when active -->
+  {{#if active}}
+    <Authors />
+  {{/if}}
+<Route path="/authors/:name">
+  <!-- Guard for initially unbound name -->
+  {{#if name}}
+    <Author :name />
   {{/if}}
 </Route>
 
 <script>
-  import { Redirect, Route } from 'svelte-router';
+  import { Route } from 'svelte-history';
+  // import Home, Books, Book, Authors, Author...
 
   export default {
-    components: { Redirect, Route },
-    data: () => ({ authorized: false })
+    components: { Route }
   }
 </script>
 ```
 
-## Switch
-
-(Note: not implemented just yet) To match a single route exclusively, you can wrap routes in a `<Switch>`. This is useful for handling unmatched routes and mixing static and dynamic components. `<Switch>` creates a router context that is then passed to all contained `<Route>`, `<Link>`, and `<Redirect>` components.
+## Redirect
 
 ```html
-<Switch bind:context=router>
-  <Route :router path="/authors" exact>
-    Authors
-  </Route>
-  <Route :router path="/authors/static">
-    Static Author
-  </Route>
-  <Route :router path="/authors/:name" bind:name>
-    Author: {{name}}
-  </Route>
+{{#if !authorized}}
+  <Redirect to="/" />
+{{/if}}
 
-  <Redirect :router from="/writers" to="/authors" />
+<Redirect from="/old" to="/new" />
 
-  <!--
-    Catch-all route if nothing has matched  
-  -->
-  <Route>
-    404 Not Found
-  </Route>
-</Switch>
+<script>
+  import { Redirect } from 'svelte-history';
+
+  export default {
+    components: { Redirect }
+  }
+</script>
 ```
 
-TODO
+## Custom Link
 
-- [ ] Implement `<Switch>`
+```html
+<li class="{{active ? 'is-active' : ''}}">
+  <a :href on:click="click()"><slot /></a>
+</li>
 
-## Development
+<script>
+  export default {
+    data: () => ({ to: '/', exact: true }),
+    computed: {
+      active: ($history, to, exact) => $history.match(to, { exact }),
+      href: ($history, to) => $history.pathToHref(to)
+    },
+    methods: {
+      click() {
+        const history = this.store.get('history');
+        const to = this.get('to');
 
+        history.push(to);
+      }
+    }
+  }
+</script>
 ```
-yarn
-yarn run dev
-```
-
-(May need to run `yarn start` and `yarn run build --watch` in separate processes)

@@ -1,48 +1,37 @@
 import replace from 'rollup-plugin-replace';
 import svelte from 'rollup-plugin-svelte';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import buble from 'rollup-plugin-buble';
 import uglify from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 
-const production = !process.env.ROLLUP_WATCH;
+const production =
+  !process.env.ROLLUP_WATCH || process.env.NODE_ENV === 'production';
 
 export default {
-  input: 'src/main.js',
+  input: 'src/index.js',
   output: {
     sourcemap: true,
-    format: 'iife',
-    file: 'public/bundle.js'
+    format: 'umd',
+    file: 'dist/svelte-history.js',
+    globals: {
+      history: 'history',
+      'path-to-regexp': 'pathToRegexp'
+    }
   },
-  name: 'app',
+  name: 'svelteHistory',
+  external: ['history', 'path-to-regexp'],
   plugins: [
     replace({
-      'process.env.NODE_ENV': JSON.stringify(production ? 'production' : 'dev')
+      'process.env.NODE_ENV': JSON.stringify(
+        production ? 'production' : 'development'
+      )
     }),
 
     svelte({
       // enable run-time checks when not in production
       dev: !production,
-      // we'll extract any component CSS out into
-      // a separate file — better for performance
-      css: css => {
-        css.write('public/bundle.css');
-      },
-
-      // this results in smaller CSS files
-      cascade: false,
-
       store: true
     }),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration —
-    // consult the documentation for details:
-    // https://github.com/rollup/rollup-plugin-commonjs
-    resolve(),
-    commonjs(),
 
     filesize(),
 

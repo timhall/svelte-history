@@ -1,4 +1,6 @@
-.DS_Store
+dist/
+example/public/bundle.*
+
 node_modules
-public/bundle.*
 package-lock.json
+.DS_Store

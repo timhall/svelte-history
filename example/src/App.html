@@ -1,0 +1,66 @@
+<div class="app">
+  <header>
+    <button on:click='goBack()'>Back</button>
+    <button on:click='goForward()'>Forward</button>
+
+    <input value={{$history.location.pathname}} on:input='push(event.target.value)' />
+
+    <Link to="/books/123">Book 123</Link>
+  </header>
+  <main>
+    <Route path="/" exact>
+      <p>Home</p>
+    </Route>
+    <Route path="/books">
+      <p>Books</p>
+
+      <Route path="/books/:id" exact bind:id>
+        <p>Book, id = {{id}}</p>
+      </Route>
+    </Route>
+    <Route path="/settings">
+      <Settings />
+    </Route>
+
+    {{#if routes.home}}
+      <p>Home</p>
+    {{/if}}
+    {{#if routes.books}}
+      <p>Books</p>
+
+      {{#if routes.book}}
+        <p>Book, id = {{routes.book.id}}</p>
+      {{/if}}
+    {{/if}}
+    {{#if routes.settings}}
+      <Settings />
+    {{/if}}
+  </main>
+</div>
+
+<style>
+  .app {
+    max-width: 60em;
+    margin: 0 auto;
+    padding: 0 1em;
+  }
+</style>
+
+<script>
+  import { Link, Route, push, goBack, goForward } from '../../';
+  import Settings from './Settings.html';
+
+  export default {
+    components: { Link, Route, Settings },
+    methods: { push, goBack, goForward },
+
+    computed: {
+      routes: ($history) => ({
+        home: $history.match('/', { exact: true }),
+        books: $history.match('/books'),
+        book: $history.match('/books/:id', { exact: true }),
+        settings: $history.match('/settings')
+      })
+    }
+  }
+</script>

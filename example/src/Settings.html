@@ -1,0 +1,35 @@
+Settings
+
+{{#if routes.user}}
+  User
+{{elseif routes.search}}
+  Search
+{{elseif routes.about}}
+  <label>
+    <input type="checkbox" bind:checked=loggedIn /> Logged In
+  </label>
+
+  {{#if !loggedIn}}
+    <Redirect to="/" />
+  {{/if}}
+{{else}}
+  404: {{$history.location.pathname}} not found
+{{/if}}
+
+<Redirect from="/settings/home" to="/" />
+
+<script>
+  import { Redirect } from '../../';
+
+  export default {
+    components: { Redirect },
+    data: () => ({ loggedIn: true }),
+    computed: {
+      routes: $history => ({
+        user: $history.match('/settings/user'),
+        search: $history.match('/settings/search'),
+        about: $history.match('/settings/about')
+      })
+    }
+  }
+</script>

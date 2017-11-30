@@ -1,0 +1,37 @@
+<a :href :target :class :style :rel on:click="click(event)">
+  <slot />
+</a>
+
+<script>
+  export default {
+    data: () => ({
+      to: '/',
+      replace: false,
+      target: '',
+      class: '',
+      style: '',
+      rel: ''
+    }),
+    computed: {
+      href: ($history, to) => $history.pathToHref(to)
+    },
+    methods: {
+      click(e) {
+        this.fire('click', e);
+
+        if (e.defaultPrevented) return;
+        if (e.button !== 0) return;
+        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
+        if (this.get('target')) return;
+
+        e.preventDefault();
+        const history = this.store.get('history');
+        const to = this.get('to');
+        const replace = this.get('replace');
+
+        if (replace) history.replace(to);
+        else history.push(to);
+      }
+    }
+  }
+</script>

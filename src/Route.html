@@ -1,0 +1,18 @@
+{{#if match}}
+  <slot />
+{{/if}}
+
+<script>
+  export default {
+    oncreate() {
+      this.observe('match', match => {
+        // TODO Need to unset any removed keys (e.g. if path changes)
+        if (match) this.set(match);
+      });
+    },
+    data: () => ({ path: '/', exact: false }),
+    computed: {
+      match: (path, exact, $history) => $history.match(path, { exact })
+    }
+  }
+</script>
