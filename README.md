@@ -78,8 +78,6 @@ const app = new App({
 
 <script>
   import Link from 'svelte-history/Link.html';
-  // alternatively, import { Link } from 'svelte-history',
-  // but importing html directly avoids duplicated helpers
 
   export default {
     components: { Link }

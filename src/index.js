@@ -5,31 +5,39 @@ export { default as BrowserHistory } from './browser-history';
 export { default as HashHistory } from './hash-history';
 export { default as MemoryHistory } from './memory-history';
 
-export { default as Link } from '../Link.html';
-export { default as Route } from '../Route.html';
-export { default as Redirect } from '../Redirect.html';
+// Unclear on the best approach for distributing svelte components
+// for now, import and compile directly (to prevent duplicate helpers) with:
+//
+// import Link from 'svelte-history/Link.html'
+// import Route from 'svelte-history/Route.html';
+// import Redirect from 'svelte-history/Redirect.html';
+//
+// These will most likely be enabled once a clear distribution/tree-shaking story is avaiable
+//
+// export { default as Link } from '../Link.html';
+// export { default as Route } from '../Route.html';
+// export { default as Redirect } from '../Redirect.html';
 
 export function push(path) {
-  const history = this.store.get('history');
-  history.push(path);
+  getHistory(this).push(path);
 }
 
 export function replace(path) {
-  const history = this.store.get('history');
-  history.replace(path);
+  getHistory(this).replace(path);
 }
 
 export function go(n) {
-  const history = this.store.get('history');
-  history.go(n);
+  getHistory(this).go(n);
 }
 
 export function goBack() {
-  const history = this.store.get('history');
-  history.goBack();
+  getHistory(this).goBack();
 }
 
 export function goForward() {
-  const history = this.store.get('history');
-  history.goForward();
+  getHistory(this).goForward();
+}
+
+export function getHistory(context) {
+  return context.store.get('history');
 }
