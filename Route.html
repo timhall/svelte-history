@@ -6,7 +6,7 @@
   export default {
     oncreate() {
       this.observe('match', match => {
-        // TODO Need to unset any removed keys (e.g. if path changes)
+        // TODO Need to unset any removed keys (for unmatch or if path changes)
         if (match) this.set(match);
       });
     },

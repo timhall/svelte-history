@@ -1,7 +1,8 @@
 {
   "name": "svelte-history",
-  "version": "0.0.1",
-  "main": "dist/svelte-history",
+  "version": "0.0.0",
+  "main": "umd/svelte-history",
+  "module": "es/svelte-history",
   "devDependencies": {
     "chokidar": "^1.7.0",
     "rollup": "^0.49.3",
@@ -20,11 +21,13 @@
     "url-pattern": "^1.0.3"
   },
   "scripts": {
-    "build": "rollup -c",
-    "build:example": "rollup -c rollup.config.example.js",
-    "start": "serve example/public"
+    "build": "rollup -c && rollup -c rollup.config.es.js",
+    "build:example": "rollup -c example/rollup.config.js",
+    "start": "serve example/public",
+    "prepublish": "npm run build"
   },
   "prettier": {
     "singleQuote": true
-  }
+  },
+  "files": ["umd", "es", "Link.html", "Redirect.html", "Route.html"]
 }

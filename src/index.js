@@ -1,11 +1,13 @@
 export { default as match } from './match';
+export { default as History } from './history';
+
 export { default as BrowserHistory } from './browser-history';
 export { default as HashHistory } from './hash-history';
 export { default as MemoryHistory } from './memory-history';
 
-export { default as Link } from './Link.html';
-export { default as Route } from './Route.html';
-export { default as Redirect } from './Redirect.html';
+export { default as Link } from '../Link.html';
+export { default as Route } from '../Route.html';
+export { default as Redirect } from '../Redirect.html';
 
 export function push(path) {
   const history = this.store.get('history');

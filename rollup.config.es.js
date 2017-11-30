@@ -1,10 +1,7 @@
 import replace from 'rollup-plugin-replace';
 import svelte from 'rollup-plugin-svelte';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import buble from 'rollup-plugin-buble';
-import uglify from 'rollup-plugin-uglify';
 
 const production = process.env.NODE_ENV
   ? process.env.NODE_ENV === 'production'
@@ -14,14 +11,11 @@ export default {
   input: 'src/index.js',
   output: {
     sourcemap: true,
-    format: 'umd',
-    file: 'umd/svelte-history.js',
-    globals: {
-      history: 'History'
-    }
+    format: 'es',
+    file: 'es/svelte-history.js'
   },
   name: 'SvelteHistory',
-  external: ['history'],
+  external: ['history', 'path-to-regexp'],
   plugins: [
     replace({
       'process.env.NODE_ENV': JSON.stringify(
@@ -35,12 +29,9 @@ export default {
       store: true
     }),
 
-    resolve(),
-    commonjs(),
     filesize(),
 
-    production && buble({ exclude: 'node_modules/**' }),
-    production && uglify()
+    production && buble({ exclude: 'node_modules/**' })
   ],
 
   watch: {

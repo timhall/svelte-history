@@ -1,5 +1,12 @@
 # svelte-history
 
+## Install
+
+```sh
+npm install --save svelte-history
+yarn add svelte-history
+```
+
 ## Usage
 
 ```js
@@ -70,7 +77,9 @@ const app = new App({
 <Link to="/replace" replace>Internal</Link>
 
 <script>
-  import { Link } from 'svelte-history';
+  import Link from 'svelte-history/Link.html';
+  // alternatively, import { Link } from 'svelte-history',
+  // but importing html directly avoids duplicated helpers
 
   export default {
     components: { Link }
@@ -113,7 +122,7 @@ currently:
 </Route>
 
 <script>
-  import { Route } from 'svelte-history';
+  import Route from 'svelte-history/Route.html';
   // import Home, Books, Book, Authors, Author...
 
   export default {
@@ -132,7 +141,7 @@ currently:
 <Redirect from="/old" to="/new" />
 
 <script>
-  import { Redirect } from 'svelte-history';
+  import Redirect from 'svelte-history/Redirect.html';
 
   export default {
     components: { Redirect }

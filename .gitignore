@@ -1,4 +1,5 @@
-dist/
+umd/
+es/
 example/public/bundle.*
 
 node_modules
