@@ -81,11 +81,13 @@ const app = new App({
 ## Route
 
 Note: You can think of `<Route>` as the future API, but it has some deficiencies
-currently: Content is rendered immediately, regardless of whether the route is
-active ([see #903](https://github.com/sveltejs/svelte/issues/903)), there is no
-`<Switch>` available to catch unmatched situations (e.g. for 404), and route
-params (see `bind:id` below) are initially unbound, potentially leading to
-issues since content is rendered immediately.
+currently:
+
+* Content is rendered immediately, regardless of whether the route is active
+  ([see #903](https://github.com/sveltejs/svelte/issues/903))
+* There is no `<Switch>` available to catch unmatched situations (e.g. for 404)
+* Route params (see `bind:id` below) are initially unbound, potentially leading
+  to issues since content is rendered immediately.
 
 ```html
 <Route path="/" exact>
@@ -98,12 +100,12 @@ issues since content is rendered immediately.
     <Book :id />
   </Route>
 </Route>
-<Route path="/authors" exact bind:active>
+<Route path="/authors" exact bind:match>
   <!-- Only render when active -->
-  {{#if active}}
+  {{#if match}}
     <Authors />
   {{/if}}
-<Route path="/authors/:name">
+<Route path="/authors/:name" bind:name>
   <!-- Guard for initially unbound name -->
   {{#if name}}
     <Author :name />
