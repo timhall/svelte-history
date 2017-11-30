@@ -1,6 +1,6 @@
 {
   "name": "svelte-history",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "umd/svelte-history",
   "module": "es/svelte-history",
   "devDependencies": {
@@ -29,5 +29,11 @@
   "prettier": {
     "singleQuote": true
   },
-  "files": ["umd", "es", "Link.html", "Redirect.html", "Route.html"]
+  "files": [
+    "umd",
+    "es",
+    "Link.html",
+    "Redirect.html",
+    "Route.html"
+  ]
 }
