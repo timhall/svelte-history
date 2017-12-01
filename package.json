@@ -1,6 +1,6 @@
 {
   "name": "svelte-history",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "main": "umd/svelte-history",
   "module": "es/svelte-history",
