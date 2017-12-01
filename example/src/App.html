@@ -8,32 +8,18 @@
     <Link to="/books/123">Book 123</Link>
   </header>
   <main>
-    <Route path="/" exact>
-      <p>Home</p>
-    </Route>
-    <Route path="/books">
-      <p>Books</p>
-
-      <Route path="/books/:id" exact bind:id>
-        <p>Book, id = {{id}}</p>
-      </Route>
-    </Route>
-    <Route path="/settings">
-      <Settings />
-    </Route>
-
     {{#if routes.home}}
       <p>Home</p>
-    {{/if}}
-    {{#if routes.books}}
+    {{elseif routes.books}}
       <p>Books</p>
 
       {{#if routes.book}}
         <p>Book, id = {{routes.book.id}}</p>
       {{/if}}
-    {{/if}}
-    {{#if routes.settings}}
+    {{elseif routes.settings}}
       <Settings />
+    {{else}}
+      404: Not Found
     {{/if}}
   </main>
 </div>
@@ -48,8 +34,8 @@
 
 <script>
   import { push, goBack, goForward } from '../../';
-  import Link from '../../Link.html';
-  import Route from '../../Route.html';
+  import Link from '../../src/Link.html';
+  import Route from '../../src/Route.html';
   import Settings from './Settings.html';
 
   export default {

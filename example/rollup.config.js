@@ -32,7 +32,7 @@ export default {
 
       // this results in smaller CSS files
       cascade: false,
-
+      hydratable: true,
       store: true
     }),
 

@@ -21,7 +21,7 @@ export function createMemoryHistory(options) {
 function prepareHistory(history) {
   history.match = (path, options = {}) => {
     const { exact = false } = options;
-    return match(History.location.pathname, { path, exact });
+    return match(history.location.pathname, { path, exact });
   };
 
   const createHref = history.createHref;
