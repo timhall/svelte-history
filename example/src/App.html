@@ -44,9 +44,9 @@
 
     computed: {
       routes: ($history) => ({
-        home: $history.match('/', { exact: true }),
+        home: $history.match({ path: '/', exact: true }),
         books: $history.match('/books'),
-        book: $history.match('/books/:id', { exact: true }),
+        book: $history.match({ path: '/books/:id', exact: true }),
         settings: $history.match('/settings')
       })
     }

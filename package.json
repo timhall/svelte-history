@@ -25,7 +25,7 @@
   "scripts": {
     "build": "rollup -c && rollup -c rollup.config.es.js",
     "build:example": "rollup -c example/rollup.config.js",
-    "start": "npm run build:example && node example/server",
+    "start": "node example/server",
     "prepublish": "npm run build"
   },
   "prettier": {

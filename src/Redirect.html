@@ -13,7 +13,7 @@
     data: () => ({ to: '/', from: null }),
     computed: {
       active: (from, to, $history) => {
-        const active = from && $history.match(from);
+        const active = from && $history.match({ path: from, exact: true });
         if (!active) return false;
 
         $history.replace(to);

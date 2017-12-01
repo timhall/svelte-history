@@ -12,7 +12,9 @@ yarn add svelte-history
 ```js
 import { Store } from 'svelte/store';
 import { createBrowserHistory } from 'svelte-history';
-// Also available: createHashHistory and createMemoryHistory
+// Also available:
+// - createHashHistory
+// - createMemoryHistory
 
 import App from './App.html';
 
@@ -30,12 +32,14 @@ const app = new App({
 ## match
 
 ```html
-{{#if $history.match('/', { exact: true })}}
+{{#if $history.match('/')}}
   <Home />
 {{elseif routes.books}}
   <Books />
-{{elseif routes.book}}
-  <Book id="{{routes.book.id}}" />
+
+  {{#if routes.book}}
+    <Book id="{{routes.book.id}}" />
+  {{/if}}
 {{else}}
   <NotFound />
 {{/if}}
@@ -47,7 +51,7 @@ const app = new App({
     computed: {
       routes: $history => ({
         books: $history.match('/books'),
-        book: $history.match('/book/:id')
+        book: $history.match({ path: '/book/:id', exact: true })
       })
     }
   }
@@ -68,6 +72,36 @@ const app = new App({
 
   export default {
     methods: { push, replace, go, goBack, goForward }
+  }
+</script>
+```
+
+## toRoutes
+
+Helper for reducing `match` boilerplate.
+
+```html
+{{#if routes.a}}
+  A
+{{elseif routes.b}}
+  B
+{{elseif routes.c}}
+  C (d: {{routes.c.d}}, e: {{routes.c.e}})
+{{else}}
+  Not Found
+{{/if}}
+
+<script>
+  import { toRoutes } from 'svelte-history';
+
+  export default {
+    computed: {
+      routes: $history => toRoutes($history, {
+        a: { path: '/a', exact: true },
+        b: '/b',
+        c: '/c/:d/:e'
+      })
+    }
   }
 </script>
 ```
@@ -114,6 +148,7 @@ currently:
   {{#if match}}
     <Authors />
   {{/if}}
+</Route>
 <Route path="/authors/:name" bind:name>
   <!-- Guard for initially unbound name -->
   {{#if name}}
@@ -160,7 +195,7 @@ currently:
   export default {
     data: () => ({ to: '/', exact: true }),
     computed: {
-      active: ($history, to, exact) => $history.match(to, { exact }),
+      active: ($history, to, exact) => $history.match({ path: to, exact }),
     },
     methods: {
       click() {

@@ -12,7 +12,7 @@
     },
     data: () => ({ path: '/', exact: false }),
     computed: {
-      match: (path, exact, $history) => $history.match(path, { exact })
+      match: (path, exact, $history) => $history.match({ path, exact })
     }
   }
 </script>

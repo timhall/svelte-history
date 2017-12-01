@@ -8,18 +8,16 @@ function compile(pattern, options = {}) {
 
   const keys = [];
   const regex = pathToRegexp(pattern, keys, options);
+  const compiled = (cache[id] = { regex, keys });
 
-  // Extract params from match values based on keys + position
-  // keys: [{ name, ... }]
-  const toParams = values => {
-    return keys.reduce((memo, key, index) => {
-      memo[key.name] = values[index];
-      return memo;
-    }, {});
-  };
-
-  const compiled = (cache[id] = { regex, toParams });
   return compiled;
+}
+
+function toParams(keys, values) {
+  return keys.reduce((memo, key, index) => {
+    memo[key.name] = values[index];
+    return memo;
+  }, {});
 }
 
 export default function match(pathname, options = {}) {
@@ -31,7 +29,7 @@ export default function match(pathname, options = {}) {
     strict = false,
     sensitive = false
   } = options;
-  const { regex, toParams } = compile(path, { end: exact, strict, sensitive });
+  const { regex, keys } = compile(path, { end: exact, strict, sensitive });
 
   const match = regex.exec(pathname);
   if (!match) return false;
@@ -39,6 +37,6 @@ export default function match(pathname, options = {}) {
   const [url, ...values] = match;
   if (exact && pathname !== url) return false;
 
-  const params = toParams(values);
+  const params = toParams(keys, values);
   return params;
 }
