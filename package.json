@@ -31,6 +31,12 @@
   "prettier": {
     "singleQuote": true
   },
-  "files": ["umd", "es", "Link.html", "Redirect.html", "Route.html"],
+  "files": [
+    "umd",
+    "es",
+    "src/Link.html",
+    "src/Redirect.html",
+    "src/Route.html"
+  ],
   "svelte.root": "src"
 }
